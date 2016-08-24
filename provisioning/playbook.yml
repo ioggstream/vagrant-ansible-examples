@@ -1,0 +1,19 @@
+---
+# test file
+
+- hosts: all
+
+  pre_tasks:
+  - name: Get all host ips
+    set_fact:
+      elasticsearch_zen_ping_unicast_hosts: "{{ hostvars|map(attribute='address')|list }}"
+  
+  roles:
+      - role: devops.elasticsearch
+        elasticsearch_base_dir: '/data/elasticsearch'
+        elasticsearch_network_host: '{{ ansible_default_ipv4.address }}'
+      # test cluster
+        elasticsearch_cluster: True
+        elasticsearch_zen_minimum_master_nodes: 1
+        # elasticsearch_zen_ping_unicast_hosts:  '{{ip_list1}}' 
+  

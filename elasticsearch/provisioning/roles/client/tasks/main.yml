@@ -1,0 +1,12 @@
+#
+#
+#
+
+- name: Install EPEL
+  yum: name=epel-release state=present
+
+- name: Install JAVA
+  yum: name=java state=present
+
+
+

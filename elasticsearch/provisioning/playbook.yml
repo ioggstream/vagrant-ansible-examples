@@ -1,0 +1,33 @@
+---
+# test file
+
+- hosts: elastic
+
+  pre_tasks:
+  - name: Debug
+    debug: msg="{{hostvars}}"
+  - name: Debug
+    debug: msg="{{groups['elastic']}}"
+  - name: Get all host ips
+    set_fact:
+      #elasticsearch_zen_ping_unicast_hosts: "{{ hostvars |map(attribute='address')|list }}"
+      #elasticsearch_zen_ping_unicast_hosts: "{{ groups['elastic']|map('extract', hostvars, ['e1','ansible_eth0','ipv4','address'])|list }}"
+      elasticsearch_zen_ping_unicast_hosts: "{{ groups['elastic']|map('extract', hostvars, ['ansible_all_ipv4_addresses'])|list }}"
+      elasticsearch_zen_ping_unicast_hosts: "{{ groups['elastic']|map('extract', hostvars, ['ansible_ssh_host'])|list }}"
+  
+  roles:
+      - role: devops.elasticsearch
+        elasticsearch_base_dir: '/data/elasticsearch'
+        elasticsearch_network_host: '{{ ansible_default_ipv4.address }}'
+      # test cluster
+        elasticsearch_cluster: True
+        elasticsearch_cluster_name: elasticsearch
+        elasticsearch_zen_minimum_master_nodes: 1
+      - role: elastictest 
+      - role: debug
+
+
+- hosts: client
+  roles:
+   - role: debug
+   - role: client

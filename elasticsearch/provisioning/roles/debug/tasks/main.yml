@@ -1,0 +1,16 @@
+#
+# Install some debug and benchmarking packages.
+#
+- name: Install EPEL
+  yum: name=epel-release state=present
+
+- name: Install monitoring packages
+  yum: name={{item}} state=present
+  with_items:
+    - strace
+    - sysstat
+    - dstat
+    - gdb
+    - iotop
+    - perf
+    - iperf

@@ -1,0 +1,23 @@
+#
+# Configure some elasticsearch parameters.
+#  
+#  TODO: increase locked memory limits and fileno.
+#
+
+- name: Set elasticsearch heap size to RAM/2
+  lineinfile: dest="/etc/sysconfig/elasticsearch"
+              line='ES_HEAP_SIZE=2g' 
+              state=present
+
+- name: Set swappiness to 1
+  lineinfile: dest="/etc/sysctl.d/99-elastic.conf"
+              line="vm.swappiness=1"
+              state=present
+              create=True
+
+- name: Reload sysctl
+  shell: cmd="sysctl -p --system"
+
+- name: Reload elasticsearch
+  service: name=elasticsearch state=restarted
+
